@@ -1,6 +1,7 @@
 $(document).ready(function(){
 
 	var items = getFromLocal('memos');
+	var index;
 	loadList(items);
 	// if input is empty disable button
 	$('button').prop('disabled', true);
@@ -31,14 +32,28 @@ $(document).ready(function(){
 	// delete one item
 	$('ul').delegate("span", "click", function(event){
 		event.stopPropagation();
-		var index = $('span').index(this);
+		index = $('span').index(this);
 		$('li').eq(index).remove();
 		items.splice(index, 1);
 		storeToLocal('memos', items);
 		
 	});
 
-	// loadList at beginning
+	// edit panel
+	$('ul').delegate('li', 'click', function(){
+		index = $('li').index(this);
+		var content = items[index];
+		console.log(content);
+		$('#edit-input').val(content );
+	});
+
+	$('#edit-button').click(function(){
+		items[index] = $('#edit-input').val();
+		loadList(items);
+		storeToLocal("memos", items);
+	});
+
+	// loadList
 	function loadList(items){
 		$('li').remove();
 		if(items.length > 0) {
